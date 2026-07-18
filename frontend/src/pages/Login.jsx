@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { clearStoredAuth, setStoredAuth } from "../auth";
 import "../App.css";
 
 function Login() {
@@ -22,6 +23,12 @@ function Login() {
           }
         );
 
+        const authPayload = {
+          token: res.data.token || null,
+          user: res.data.user || null,
+        };
+        setStoredAuth(authPayload);
+
         alert(res.data.message);
 
         setEmail("");
@@ -38,6 +45,12 @@ function Login() {
           }
         );
 
+        const authPayload = {
+          token: res.data.token || null,
+          user: res.data.user || null,
+        };
+        setStoredAuth(authPayload);
+
         alert(res.data.message);
 
         setName("");
@@ -47,6 +60,7 @@ function Login() {
         setIsLogin(true);
       }
     } catch (err) {
+      clearStoredAuth();
       alert(err.response?.data?.message || "Something went wrong");
 
       setPassword("");
