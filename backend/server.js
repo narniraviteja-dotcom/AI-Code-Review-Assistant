@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 
 const userRoutes = require("./routes/user");
 const codeReviewRoutes = require("./routes/codeReview");
+const { notFound, errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
 
@@ -17,12 +18,18 @@ app.use(cors({
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+// API Routes
 app.use("/api/users", userRoutes);
 app.use("/api/reviews", codeReviewRoutes);
 
+// Health check
 app.get("/", (req, res) => {
   res.send("AI Code Review Assistant Backend Running");
 });
+
+// Error handling middleware (must be after routes)
+app.use(notFound);
+app.use(errorHandler);
 
 connectDB();
 

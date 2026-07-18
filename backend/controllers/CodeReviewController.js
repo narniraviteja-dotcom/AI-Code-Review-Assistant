@@ -407,4 +407,7 @@ module.exports = {
   getHistory,
   getStats,
   deleteReview,
+  normalizeAiReview,
+  normalizeStaticAnalysis,
+  getSuggestedFix,
 };
