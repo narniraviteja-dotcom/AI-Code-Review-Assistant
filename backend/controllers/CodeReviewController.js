@@ -1,6 +1,7 @@
 const CodeReview = require("../models/CodeReview");
+const ai = require("../config/gemini");
 
-// Upload Code
+// Upload Code and Generate AI Review
 const uploadCode = async (req, res) => {
   try {
     const { language, code } = req.body;
@@ -11,13 +12,41 @@ const uploadCode = async (req, res) => {
       });
     }
 
+    const prompt = `
+Review the following ${language} code.
+
+Give:
+1. Bugs found
+2. Suggestions
+3. Detailed explanation
+
+Code:
+${code}
+`;
+
+    let review = "AI review unavailable at the moment. Please try again later.";
+
+    try {
+      const response = await ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: prompt,
+      });
+
+      review = response.text || review;
+    } catch (geminiError) {
+      console.error("Gemini review generation failed:", geminiError);
+    }
+
     const newReview = await CodeReview.create({
       language,
       code,
+      review,
+      bugs: 0,
+      suggestions: 0,
     });
 
     res.status(201).json({
-      message: "Code uploaded successfully",
+      message: "Code reviewed successfully",
       data: newReview,
     });
   } catch (error) {
@@ -28,21 +57,17 @@ const uploadCode = async (req, res) => {
   }
 };
 
-// Get Upload History
+// Get History
 const getHistory = async (req, res) => {
   try {
     const reviews = await CodeReview.find().sort({ createdAt: -1 });
-
-    res.status(200).json(reviews);
+    res.json(reviews);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Server Error",
-    });
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
-// Dashboard Statistics
+// Dashboard Stats
 const getStats = async (req, res) => {
   try {
     const totalReviews = await CodeReview.countDocuments();
@@ -57,16 +82,13 @@ const getStats = async (req, res) => {
       },
     ]);
 
-    res.status(200).json({
+    res.json({
       totalReviews,
-      bugsFound: result.length > 0 ? result[0].totalBugs : 0,
-      suggestions: result.length > 0 ? result[0].totalSuggestions : 0,
+      bugsFound: result.length ? result[0].totalBugs : 0,
+      suggestions: result.length ? result[0].totalSuggestions : 0,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Server Error",
-    });
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
