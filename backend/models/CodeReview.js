@@ -26,6 +26,20 @@ const codeReviewSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    staticAnalysis: {
+      tool: {
+        type: String,
+        default: "",
+      },
+      summary: {
+        type: String,
+        default: "",
+      },
+      issues: {
+        type: [String],
+        default: [],
+      },
+    },
   },
   {
     timestamps: true,

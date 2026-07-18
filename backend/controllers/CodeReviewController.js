@@ -96,6 +96,7 @@ ${code}
       review,
       bugs: Math.max(0, staticAnalysis.issues.length),
       suggestions: Math.max(0, staticAnalysis.issues.length > 0 ? 1 : 0),
+      staticAnalysis,
     });
 
     res.status(201).json({

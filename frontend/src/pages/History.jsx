@@ -94,6 +94,21 @@ function History() {
                 {review.code}
               </pre>
 
+              <h3 style={{ margin: "8px 0", color: "#1e293b" }}>Static Code Analysis</h3>
+              <p style={{ color: "#334155", lineHeight: 1.6, marginBottom: "10px" }}>
+                <strong>Tool:</strong> {review.staticAnalysis?.tool || "Not available"}
+              </p>
+              <p style={{ color: "#334155", lineHeight: 1.6, marginBottom: "10px" }}>
+                {review.staticAnalysis?.summary || "No static analysis output available."}
+              </p>
+              {review.staticAnalysis?.issues?.length > 0 && (
+                <ul style={{ marginBottom: "14px", paddingLeft: "20px", color: "#334155" }}>
+                  {review.staticAnalysis.issues.map((issue, index) => (
+                    <li key={`${review._id}-${index}`}>{issue}</li>
+                  ))}
+                </ul>
+              )}
+
               <h3 style={{ margin: "8px 0", color: "#1e293b" }}>AI Review</h3>
               <p style={{ color: "#334155", lineHeight: 1.6, marginBottom: "14px" }}>
                 {review.review || "No review available"}
