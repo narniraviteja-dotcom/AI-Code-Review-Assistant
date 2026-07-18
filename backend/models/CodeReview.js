@@ -36,7 +36,7 @@ const codeReviewSchema = new mongoose.Schema(
         default: "",
       },
       issues: {
-        type: [String],
+        type: [mongoose.Schema.Types.Mixed],
         default: [],
       },
     },

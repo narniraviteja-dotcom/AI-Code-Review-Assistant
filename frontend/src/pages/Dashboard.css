@@ -46,3 +46,97 @@
     color: #555;
     margin: 0;
 }
+
+.analysis-section {
+    margin-top: 30px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.analysis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.section-label {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #64748b;
+    font-size: 12px;
+    margin: 0 0 4px;
+}
+
+.analysis-header h2 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 22px;
+}
+
+.tool-badge {
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.analysis-table-wrap {
+    overflow-x: auto;
+}
+
+.analysis-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.analysis-table th,
+.analysis-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    vertical-align: top;
+}
+
+.analysis-table th {
+    color: #1e293b;
+    background: #f8fafc;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    text-transform: capitalize;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-badge.error {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-badge.warning {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.status-badge.info {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.empty-state {
+    padding: 20px;
+    text-align: center;
+    color: #64748b;
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+}

@@ -101,11 +101,17 @@ function History() {
               <p style={{ color: "#334155", lineHeight: 1.6, marginBottom: "10px" }}>
                 {review.staticAnalysis?.summary || "No static analysis output available."}
               </p>
-              {review.staticAnalysis?.issues?.length > 0 && (
+              {(review.staticAnalysis?.issues || []).length > 0 && (
                 <ul style={{ marginBottom: "14px", paddingLeft: "20px", color: "#334155" }}>
-                  {review.staticAnalysis.issues.map((issue, index) => (
-                    <li key={`${review._id}-${index}`}>{issue}</li>
-                  ))}
+                  {(review.staticAnalysis?.issues || []).map((issue, index) => {
+                    const description = typeof issue === "string" ? issue : issue.description || "No description";
+                    const severity = typeof issue === "string" ? "warning" : issue.severity || "warning";
+                    return (
+                      <li key={`${review._id}-${index}`}>
+                        <strong>{severity}</strong>: {description}
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
 
