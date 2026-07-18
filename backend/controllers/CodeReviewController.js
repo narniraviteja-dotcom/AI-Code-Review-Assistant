@@ -301,11 +301,28 @@ ${code}
   }
 };
 
-// Get History
+// Get History with pagination
 const getHistory = async (req, res) => {
   try {
-    const reviews = await CodeReview.find().sort({ createdAt: -1 });
-    res.json(reviews);
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 10));
+    const skip = (page - 1) * limit;
+
+    const [reviews, total] = await Promise.all([
+      CodeReview.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+      CodeReview.countDocuments(),
+    ]);
+
+    res.json({
+      reviews,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasMore: skip + limit < total,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import "./Dashboard.css";
 
@@ -14,26 +14,62 @@ function Dashboard() {
       latestTool: "None",
       issues: [],
     },
+    aiReview: {
+      completedCount: 0,
+      fallbackCount: 0,
+      latestSummary: "No AI review available",
+    },
   });
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/reviews/stats");
       setStats(res.data);
+      setLastUpdated(new Date().toLocaleTimeString());
     } catch (error) {
       console.error(error);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchStats();
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
+  }, [fetchStats]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchStats();
+    setTimeout(() => setRefreshing(false), 500);
   };
 
   const issueRows = stats.staticAnalysis?.issues || [];
 
   return (
     <div className="dashboard">
-      <h1 className="dashboard-title">Dashboard</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginBottom: "20px" }}>
+        <h1 className="dashboard-title" style={{ margin: 0 }}>Dashboard</h1>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          {lastUpdated && (
+            <span style={{ color: "#64748b", fontSize: "13px" }}>
+              Last updated: {lastUpdated}
+            </span>
+          )}
+          <button
+            className={`refresh-btn ${refreshing ? "spinning" : ""}`}
+            onClick={handleRefresh}
+            disabled={refreshing}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16" />
+            </svg>
+            {refreshing ? "Refreshing..." : "Refresh"}
+          </button>
+        </div>
+      </div>
 
       <div className="cards">
         <div className="card-box">
