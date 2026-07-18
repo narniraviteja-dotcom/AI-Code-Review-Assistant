@@ -5,6 +5,7 @@ import "./Dashboard.css";
 function History() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     fetchReviews();
@@ -19,6 +20,25 @@ function History() {
       setReviews([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this review?")) return;
+
+    setDeletingId(id);
+    try {
+      await axios.delete(`http://localhost:5000/api/reviews/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setReviews((prev) => prev.filter((r) => r._id !== id));
+    } catch (error) {
+      console.error("Failed to delete review:", error);
+      alert("Failed to delete review. You may need to log in again.");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -62,17 +82,35 @@ function History() {
                   marginBottom: "14px",
                 }}
               >
-                <span
-                  style={{
-                    fontWeight: 700,
-                    color: "#2563eb",
-                    background: "#eff6ff",
-                    padding: "6px 10px",
-                    borderRadius: "999px",
-                  }}
-                >
-                  {review.language}
-                </span>
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <span
+                    style={{
+                      fontWeight: 700,
+                      color: "#2563eb",
+                      background: "#eff6ff",
+                      padding: "6px 10px",
+                      borderRadius: "999px",
+                    }}
+                  >
+                    {review.language}
+                  </span>
+                  <button
+                    onClick={() => handleDelete(review._id)}
+                    disabled={deletingId === review._id}
+                    style={{
+                      background: "#fee2e2",
+                      color: "#b91c1c",
+                      border: "none",
+                      padding: "6px 12px",
+                      borderRadius: "999px",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                      fontSize: "13px",
+                    }}
+                  >
+                    {deletingId === review._id ? "Deleting..." : "Delete"}
+                  </button>
+                </div>
                 <span style={{ color: "#64748b", fontSize: "14px" }}>
                   {new Date(review.createdAt).toLocaleString()}
                 </span>

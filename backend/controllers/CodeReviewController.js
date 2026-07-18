@@ -1,7 +1,7 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { execFileSync } = require("child_process");
+const { execFileSync, execSync } = require("child_process");
 const CodeReview = require("../models/CodeReview");
 const ai = require("../config/gemini");
 
@@ -186,10 +186,9 @@ const runStaticAnalysis = (language, code) => {
 
     if (normalizedLanguage === "javascript") {
       // For JavaScript, run ESLint
-      const output = execFileSync(
-        "npx",
-        ["eslint", filePath, "--no-eslintrc", "--parser-options", "{\"ecmaVersion\":2020}", "--rule", "semi: error", "--rule", "no-unused-vars: error"],
-        { encoding: "utf8", timeout: 60000 }
+      const output = execSync(
+        `npx eslint "${filePath}" --no-eslintrc --parser-options "{\\"ecmaVersion\\":2020}" --rule "semi: error" --rule "no-unused-vars: error"`,
+        { encoding: "utf8", timeout: 60000, shell: true }
       );
       return normalizeStaticAnalysis("eslint", output);
     }
@@ -371,8 +370,24 @@ const getStats = async (req, res) => {
   }
 };
 
+// Delete a review
+const deleteReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const review = await CodeReview.findByIdAndDelete(id);
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+    res.json({ message: "Review deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
 module.exports = {
   uploadCode,
   getHistory,
   getStats,
+  deleteReview,
 };
