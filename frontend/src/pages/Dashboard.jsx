@@ -65,6 +65,11 @@ function Dashboard() {
           <h2>{stats.staticAnalysis?.warningsCount || 0}</h2>
           <p>Warnings</p>
         </div>
+
+        <div className="card-box">
+          <h2>{stats.aiReview?.completedCount || 0}</h2>
+          <p>AI Reviews</p>
+        </div>
       </div>
 
       <div className="analysis-section">
@@ -75,6 +80,10 @@ function Dashboard() {
           </div>
           <span className="tool-badge">{stats.staticAnalysis?.latestTool || "None"}</span>
         </div>
+
+        <p style={{ color: "#475569", marginBottom: "12px" }}>
+          <strong>AI insight:</strong> {stats.aiReview?.latestSummary || "No AI review available"}
+        </p>
 
         {issueRows.length === 0 ? (
           <div className="empty-state">No static analysis issues found.</div>

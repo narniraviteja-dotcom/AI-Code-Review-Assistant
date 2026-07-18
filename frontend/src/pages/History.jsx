@@ -116,9 +116,42 @@ function History() {
               )}
 
               <h3 style={{ margin: "8px 0", color: "#1e293b" }}>AI Review</h3>
-              <p style={{ color: "#334155", lineHeight: 1.6, marginBottom: "14px" }}>
-                {review.review || "No review available"}
+              <p style={{ color: "#334155", lineHeight: 1.6, marginBottom: "10px" }}>
+                <strong>Summary:</strong> {review.aiReview?.summary || review.review || "No review available"}
               </p>
+              <p style={{ color: "#334155", lineHeight: 1.6, marginBottom: "10px" }}>
+                <strong>Explanation:</strong> {review.aiReview?.explanation || "No explanation available"}
+              </p>
+              {review.aiReview?.bugs?.length > 0 && (
+                <div style={{ marginBottom: "10px" }}>
+                  <strong style={{ color: "#1e293b" }}>Potential Bugs:</strong>
+                  <ul style={{ marginTop: "6px", paddingLeft: "20px", color: "#334155" }}>
+                    {review.aiReview.bugs.map((bug, index) => (
+                      <li key={`${review._id}-bug-${index}`}>{typeof bug === "string" ? bug : bug.description || bug.message || bug}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {review.aiReview?.codeSmells?.length > 0 && (
+                <div style={{ marginBottom: "10px" }}>
+                  <strong style={{ color: "#1e293b" }}>Code Smells:</strong>
+                  <ul style={{ marginTop: "6px", paddingLeft: "20px", color: "#334155" }}>
+                    {review.aiReview.codeSmells.map((smell, index) => (
+                      <li key={`${review._id}-smell-${index}`}>{typeof smell === "string" ? smell : smell.description || smell.message || smell}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {review.aiReview?.improvements?.length > 0 && (
+                <div style={{ marginBottom: "10px" }}>
+                  <strong style={{ color: "#1e293b" }}>Improvements:</strong>
+                  <ul style={{ marginTop: "6px", paddingLeft: "20px", color: "#334155" }}>
+                    {review.aiReview.improvements.map((item, index) => (
+                      <li key={`${review._id}-improvement-${index}`}>{typeof item === "string" ? item : item.description || item.message || item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               <div
                 style={{
