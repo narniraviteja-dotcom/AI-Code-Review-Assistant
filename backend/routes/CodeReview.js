@@ -7,7 +7,7 @@ const {
   getHistory,
   getStats,
   deleteReview,
-} = require("../controllers/codeReviewController");
+} = require("../controllers/CodeReviewController");
 
 // Upload code
 router.post("/upload", uploadCode);
