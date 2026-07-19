@@ -15,8 +15,9 @@ app.use(cors({
   origin: ["http://localhost:5173", "http://localhost:4173", "http://127.0.0.1:5173"],
   credentials: true,
 }));
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "10mb", strict: false }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(express.text({ type: "*/*" }));
 
 // API Routes
 app.use("/api/users", userRoutes);

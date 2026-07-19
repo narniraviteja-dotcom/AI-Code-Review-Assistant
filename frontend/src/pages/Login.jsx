@@ -4,6 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { clearStoredAuth, setStoredAuth } from "../auth";
 import "../App.css";
 
+const api = axios.create({
+  baseURL: "/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 function Login() {
   const navigate = useNavigate();
 
@@ -15,13 +22,10 @@ function Login() {
   const submit = async () => {
     try {
       if (isLogin) {
-        const res = await axios.post(
-          "http://localhost:5000/api/users/login",
-          {
-            email,
-            password,
-          }
-        );
+        const res = await api.post("/users/login", {
+          email,
+          password,
+        });
 
         const authPayload = {
           token: res.data.token || null,
@@ -36,14 +40,11 @@ function Login() {
 
         navigate("/dashboard");
       } else {
-        const res = await axios.post(
-          "http://localhost:5000/api/users/register",
-          {
-            name,
-            email,
-            password,
-          }
-        );
+        const res = await api.post("/users/register", {
+          name,
+          email,
+          password,
+        });
 
         const authPayload = {
           token: res.data.token || null,
